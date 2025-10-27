@@ -10,12 +10,26 @@ import captchaRoutes from "./routes/captcha.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
 import { runSeed } from "./seed.js";
 
+const allowedOrigin =
+  process.env.FRONTEND_URL || "https://comments-app.vercel.app";
+
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: true, credentials: true } });
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigin,
+    credentials: true,
+    methods: ["GET", "POST"],
+  },
+});
 
-app.use(cors({ origin: true, credentials: true }));
+app.use(
+  cors({
+    origin: allowedOrigin,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(
   session({
