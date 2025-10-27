@@ -10,20 +10,41 @@ import captchaRoutes from "./routes/captcha.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
 import { runSeed } from "./seed.js";
 
+const allowedOrigins = [
+  "https://comments-app-frontend.onrender.com",
+  "https://comments-app-1eye.onrender.com",
+  "http://localhost:5173",
+];
+
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: true, credentials: true } });
-app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
 app.use(
-  session({
-    secret: "keyboard cat",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 15 * 60 * 1000 },
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
   })
 );
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ["GET", "POST"],
+  },
+});
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "keyboard cat",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 15 * 60 * 1000,
+      sameSite: "none",
+      secure: true,
+    },
+  })
+);
+app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 app.use("/api/comments", commentRoutes);
