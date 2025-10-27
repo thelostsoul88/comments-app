@@ -32,6 +32,11 @@ const CommentItem = ({ comment, onAdded = () => {} }) => {
     <div className="comment-item fade-in">
       <div className="comment-meta">
         <strong>{comment.user?.username || "Аноним"}</strong>
+        {comment.user?.email && (
+          <span style={{ marginLeft: 8, color: "#555" }}>
+            {comment.user.email}
+          </span>
+        )}
         <span>{new Date(comment.created_at).toLocaleString()}</span>
       </div>
 
