@@ -11,8 +11,8 @@ import uploadRoutes from "./routes/upload.routes.js";
 import { runSeed } from "./seed.js";
 
 const allowedOrigins = [
-  "https://comments-app-frontend.onrender.com",
   "https://comments-app-1eye.onrender.com",
+  "https://comments-app-1.onrender.com",
   "http://localhost:5173",
 ];
 
@@ -32,6 +32,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
+const isProduction = process.env.NODE_ENV === "production";
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "keyboard cat",
@@ -39,8 +40,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       maxAge: 15 * 60 * 1000,
-      sameSite: "none",
-      secure: true,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
     },
   })
 );
