@@ -129,6 +129,7 @@ comments-app/
 │ │ ├── entities/ # TypeORM Entities (User, Comment, File)
 │ │ ├── routes/ # Express маршруты API
 │ │ ├── utils/ # Капча, загрузка файлов, санитизация
+│ │ ├── app.js # Главный файл
 │ │ ├── db.js # Подключение TypeORM + PostgreSQL
 │ │ └── server.js # Точка входа
 │ ├── Dockerfile
@@ -139,13 +140,15 @@ comments-app/
 │ │ ├── components/ # Компоненты React (CommentTable, Form, Lightbox)
 │ │ ├── services/ # API-запросы
 │ │ ├── styles/ # CSS
+│ │ ├── App.jsx # Главный файл
+│ │ ├── config.js # Конфигурация
 │ │ └── main.jsx
 │ ├── Dockerfile
+│ ├── index.html
 │ └── vite.config.js
 │
 ├── docs/
-│ ├── schema.mysql.sql # Схема БД (MySQL)
-│ └── schema.png # Диаграмма для MySQL Workbench
+│ └── schema.mysql.sql # Схема БД (MySQL)
 │
 ├── docker-compose.yml
 ├── .env
