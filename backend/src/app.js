@@ -10,21 +10,32 @@ import captchaRoutes from "./routes/captcha.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
 import { runSeed } from "./seed.js";
 
+dotenv.config();
+const app = express();
+const server = http.createServer(app);
+
 const allowedOrigins = [
   "https://comments-app-1eye.onrender.com",
   "https://comments-app-1.onrender.com",
   "http://localhost:5173",
 ];
 
-dotenv.config();
-const app = express();
-const server = http.createServer(app);
+const isProduction = process.env.NODE_ENV === "production";
+
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn("Blocked by CORS:", origin);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
+
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
@@ -32,7 +43,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
-const isProduction = process.env.NODE_ENV === "production";
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "keyboard cat",
@@ -41,7 +52,7 @@ app.use(
     cookie: {
       maxAge: 15 * 60 * 1000,
       sameSite: isProduction ? "none" : "lax",
-      secure: isProduction,
+      secure: isProduction, // cookie работает и на https
     },
   })
 );
