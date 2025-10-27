@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { postComment, uploadFile } from "../services/api.js";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
+import { API_URL } from "../config.js";
 
 const allowedTags = ["a", "i", "strong", "code"];
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 const socket = io(API_URL, {
   transports: ["websocket"],
   withCredentials: true,

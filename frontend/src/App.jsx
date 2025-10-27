@@ -6,8 +6,12 @@ import Pagination from "./components/Pagination.jsx";
 import io from "socket.io-client";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { API_URL } from "./config.js";
 
-const socket = io("http://localhost:3000");
+const socket = io(API_URL, {
+  transports: ["websocket"],
+  withCredentials: true,
+});
 
 export default function App() {
   const [page, setPage] = useState(1);

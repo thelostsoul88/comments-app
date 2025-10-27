@@ -1,6 +1,10 @@
 import axios from "axios";
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000/api";
-const api = axios.create({ baseURL: API_BASE, withCredentials: true });
+import { API_BASE } from "../config.js";
+
+const api = axios.create({
+  baseURL: API_BASE,
+  withCredentials: true,
+});
 
 export async function getComments({
   page = 1,
@@ -13,10 +17,12 @@ export async function getComments({
   });
   return data;
 }
+
 export async function postComment(payload) {
   const { data } = await api.post("/comments", payload);
   return data;
 }
+
 export async function uploadFile(file) {
   const fd = new FormData();
   fd.append("file", file);
@@ -25,4 +31,5 @@ export async function uploadFile(file) {
   });
   return data;
 }
+
 export default api;
