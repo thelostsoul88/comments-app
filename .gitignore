@@ -1,0 +1,9 @@
+# Node
+node_modules/
+dist/
+uploads/
+.env
+*.log
+
+# Docker
+pgdata/
