@@ -36,13 +36,9 @@ app.use(
   })
 );
 
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    credentials: true,
-    methods: ["GET", "POST"],
-  },
-});
+if (isProduction) {
+  app.set("trust proxy", 1);
+}
 
 app.use(
   session({
@@ -52,18 +48,26 @@ app.use(
     cookie: {
       maxAge: 15 * 60 * 1000,
       sameSite: isProduction ? "none" : "lax",
-      secure: isProduction, // cookie работает и на https
+      secure: isProduction, // secure=true только в продакшене
     },
   })
 );
+
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
+
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ["GET", "POST"],
+  },
+});
+app.set("io", io);
 
 app.use("/api/comments", commentRoutes);
 app.use("/api/captcha", captchaRoutes);
 app.use("/api/upload", uploadRoutes);
-
-app.set("io", io);
 
 AppDataSource.initialize()
   .then(async () => {
@@ -81,11 +85,11 @@ AppDataSource.initialize()
   .catch((err) => console.error("DB init error", err));
 
 app.use((err, req, res, next) => {
-  if (err && err.code == "LIMIT_FILE_SIZE")
+  if (err && err.code === "LIMIT_FILE_SIZE")
     return res
       .status(400)
       .json({ message: "Файл слишком большой (макс. 100KB)" });
-  if (err && err.code == "INVALID_FILE_TYPE")
+  if (err && err.code === "INVALID_FILE_TYPE")
     return res.status(400).json({ message: "Неверный тип файла" });
   next(err);
 });
